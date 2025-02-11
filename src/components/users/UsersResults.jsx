@@ -1,35 +1,19 @@
 import React from 'react'
-import { useEffect, useState } from 'react';
+import { useEffect, useContext } from 'react';
+
+//contexts
+import { GithubContext } from '../../context/github/GithubContext';
+
 
 //components
 import UserItem from './UserItem';
 import Spinner from '../layout/Spinner';
 
 const UsersResults = () => {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true)
-    
+    const { users, loading, fetchUsers } = useContext(GithubContext);
     useEffect(() => {
         fetchUsers();
-        console.log(users)
     },[])
-
-    //helper functions
-    const fetchUsers = async () => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_GITHUB_URL}/users`,
-                {
-                    headers: {
-                        Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
-                    }
-                });
-            const data = await response.json();
-            setUsers(data);
-            setLoading(false);
-        } catch (error) {
-            console.error("Something happened while making your request...", error)
-        }
-    } 
 
 
     if (!loading) {
