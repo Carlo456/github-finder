@@ -1,5 +1,5 @@
 import React from 'react'
-import { useEffect, useContext } from 'react';
+import { useContext } from 'react';
 
 //contexts
 import { GithubContext } from '../../context/github/GithubContext';
@@ -10,12 +10,9 @@ import UserItem from './UserItem';
 import Spinner from '../layout/Spinner';
 
 const UsersResults = () => {
-    const { users, loading, fetchUsers } = useContext(GithubContext);
-    useEffect(() => {
-        fetchUsers();
-    },[])
-
-
+    const { users, loading } = useContext(GithubContext);
+    
+    console.log(users)
     if (!loading) {
         return (
             <div className='grid grid-cols-1 gap-8 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2'>
