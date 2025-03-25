@@ -12,12 +12,15 @@ export const GithubProvider = ({ children }) => {
 
     const initialState = {
         users: [],
+        user: {},
         loading: false
     }
 
     const [state, dispatch] = useReducer(githubReducer, initialState);
 
     //helper function
+
+    //fetch multiple users on query
     const searchUsers = async (text) => {
 
         const params = new URLSearchParams({
@@ -43,6 +46,36 @@ export const GithubProvider = ({ children }) => {
             console.error("Something happened while making your request...", error)
         }
     }
+    
+    // Get single user
+    const getUser = async ( login ) => {
+
+        setLoading();
+        try {
+            const response = await fetch(`${GITHUB_URL}/users/${login}`,
+                {
+                    headers: {
+                        Authorization: `token ${GITHUB_TOKEN}`
+                    }
+                });
+            
+            if(!response.ok) {              
+                window.location = '/not_found';
+            } else {
+                const data = await response.json();
+            
+                dispatch({
+                    type: 'GET_USER',
+                    payload: data
+                });
+            }
+            
+        } catch (error) {
+            console.error("Something happened while trying to get the user...", error)
+        }
+    }
+
+    //Empty user array 
     const emptyUsersArray = () => {
         dispatch({
             type: 'EMPTY_USERS_ARRAY',
@@ -56,8 +89,10 @@ export const GithubProvider = ({ children }) => {
 
     return <GithubContext.Provider value={{
         users: state.users,
+        user: state.user,
         loading: state.loading,
         searchUsers,
+        getUser,
         emptyUsersArray
     }}>
         { children }
